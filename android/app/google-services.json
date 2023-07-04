@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "9987698489",
+    "project_id": "showmaker-fdde8",
+    "storage_bucket": "showmaker-fdde8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:9987698489:android:3fa67a458fee10e86282e8",
+        "android_client_info": {
+          "package_name": "com.example.showmaker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "9987698489-tcl744tpsrcm6k59hb42f6mlisjkurmb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2KLV9ZUXlvpNilcVBXZMAJOZtEU44zDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "9987698489-t121q3h4mgdsem7evu41athlobmv438p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
