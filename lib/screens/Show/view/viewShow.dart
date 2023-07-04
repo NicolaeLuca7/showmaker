@@ -10,6 +10,8 @@ import 'package:showmaker/common/messages.dart';
 import 'package:showmaker/common/myType.dart';
 import 'package:showmaker/database/Show/dbMethods.dart';
 import 'package:showmaker/database/Show/show.dart';
+import 'package:showmaker/database/ShowPreview/dbMethods.dart';
+import 'package:showmaker/database/Slide/dbMethods.dart';
 import 'package:showmaker/design/customButton.dart';
 import 'package:showmaker/design/themeColors.dart';
 import 'package:http/http.dart' as http;
@@ -88,9 +90,20 @@ class _ViewShowState extends State<ViewShow> {
         ),
         child: Center(
             child: loading
-                ? CircularProgressIndicator(
-                    color: themeColors.yellowOrange,
-                  )
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                        CircularProgressIndicator(
+                          color: themeColors.yellowOrange,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          message,
+                          style: TextStyle(fontSize: 25),
+                        )
+                      ])
                 : orientation == Orientation.portrait
                     ? getPortraitScreen(
                         setState: setState,
@@ -105,7 +118,8 @@ class _ViewShowState extends State<ViewShow> {
                         downloadPDF: downloadPDF,
                         downloaded: downloaded,
                         downloadPath: downloadPath,
-                        editDialog: editDialog)
+                        editDialog: editDialog,
+                        deleteDialog: deleteDialog)
                     : getLandscapeScreen(
                         setState: setState,
                         context: context,
@@ -119,7 +133,8 @@ class _ViewShowState extends State<ViewShow> {
                         downloadPDF: downloadPDF,
                         downloaded: downloaded,
                         downloadPath: downloadPath,
-                        editDialog: editDialog)),
+                        editDialog: editDialog,
+                        deleteDialog: deleteDialog)),
       ),
     );
   }
@@ -229,7 +244,7 @@ class _ViewShowState extends State<ViewShow> {
       builder: (context) => AlertDialog(
         backgroundColor: themeColors.accentBlack,
         title: Text(
-          'Edit show?',
+          'Edit the show?',
           style: TextStyle(
             color: themeColors.darkOrange,
           ),
@@ -266,6 +281,78 @@ class _ViewShowState extends State<ViewShow> {
                           previewId: show.previewId,
                         )),
               );
+            },
+            child: Text(
+              'Yes',
+              style: TextStyle(
+                color: themeColors.darkOrange,
+              ),
+            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateColor.resolveWith(
+                (states) => themeColors.lightBlack,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void deleteDialog(BuildContext context1, Show show, StateSetter state) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: themeColors.accentBlack,
+        title: Text(
+          'Delete the show?',
+          style: TextStyle(
+            color: themeColors.darkOrange,
+          ),
+        ),
+        content: Text(
+          'You will not be able to recover it!',
+          style: TextStyle(color: themeColors.darkOrange, fontSize: 20),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'No',
+              style: TextStyle(
+                color: themeColors.darkOrange,
+              ),
+            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateColor.resolveWith(
+                (states) => themeColors.lightBlack,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              loading = true;
+              message = '';
+              state(() {});
+
+              Navigator.of(context1).pop();
+
+              message = await deleteShow(show.getId()!);
+              if (message == 'Complete') {
+                message = await deletePreview(show.previewId);
+                if (message == 'Complete') {
+                  message = await deleteSlides(
+                      show.getId()!, show.parameters.slideCount);
+                }
+              }
+              if (message == 'Complete') {
+                ScaffoldMessenger.of(context1).showSnackBar(customSnackBar(
+                    content: "Deleted", textColor: Colors.green));
+              } else {
+                ScaffoldMessenger.of(context1).showSnackBar(
+                    customSnackBar(content: message, textColor: Colors.red));
+              }
+              Navigator.popUntil(context1, ModalRoute.withName("/MainScreen"));
             },
             child: Text(
               'Yes',

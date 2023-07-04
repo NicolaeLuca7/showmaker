@@ -25,3 +25,12 @@ Future<String> updatePreview(ShowPreview preview) async {
     return e.message ?? 'Error!';
   }
 }
+
+Future<String> deletePreview(String id) async {
+  try {
+    await firestore.collection('showsPreviews').doc(id).delete();
+    return "Complete";
+  } on FirebaseException catch (e) {
+    return e.message ?? "Error";
+  }
+}

@@ -46,3 +46,15 @@ Future<String> uploadBackground(Uint8List data, String showId) async {
   }
   return url;
 }
+
+Future<String> deleteSlides(String showId, int slideCount) async {
+  try {
+    for (int i = 0; i < slideCount; i++) {
+      await storageRef.child(showId + '{$i}').delete();
+    }
+    await storageRef.child(showId + '{background}').delete();
+    return "Complete";
+  } on FirebaseException catch (e) {
+    return e.message ?? "Error";
+  }
+}

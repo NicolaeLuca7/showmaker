@@ -32,3 +32,12 @@ Future<Map<String, dynamic>> getShow(String id) async {
   }
   return data;
 }
+
+Future<String> deleteShow(String id) async {
+  try {
+    await firestore.collection('shows').doc(id).delete();
+    return "Complete";
+  } on FirebaseException catch (e) {
+    return e.message ?? "Error";
+  }
+}

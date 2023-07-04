@@ -23,6 +23,7 @@ Widget getLandscapeScreen({
   required MyType<bool> downloaded,
   required String? downloadPath,
   required Function editDialog,
+  required Function deleteDialog,
 }) {
   final orientation = MediaQuery.of(context).orientation;
   return message != ''
@@ -99,7 +100,7 @@ Widget getLandscapeScreen({
                               state: setState),
                         ),
                         SizedBox(
-                          width: 10,
+                          width: 20,
                         ),
                         CustomButton(
                             toolTip: "Edit",
@@ -120,7 +121,29 @@ Widget getLandscapeScreen({
                             splashColor: Colors.white.withOpacity(0.2),
                             onPressed: () => editDialog(context, show)),
                         SizedBox(
-                          width: 10,
+                          width: 20,
+                        ),
+                        CustomButton(
+                            toolTip: "Delete",
+                            activated: true,
+                            widget: Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            width: 40,
+                            height: 40,
+                            backgroundColors: [
+                              themeColors.accentBlack,
+                            ],
+                            shadowColor: themeColors.darkOrange,
+                            blurRadius: 7,
+                            borderRadius: BorderRadius.circular(20),
+                            splashColor: Colors.white.withOpacity(0.2),
+                            onPressed: () =>
+                                deleteDialog(context, show, setState)),
+                        SizedBox(
+                          width: 20,
                         ),
                       ],
                     ),
