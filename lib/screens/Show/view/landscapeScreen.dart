@@ -76,29 +76,28 @@ Widget getLandscapeScreen({
                         Spacer(),
                         Text(show!.title, style: TextStyle(fontSize: 30)),
                         Spacer(),
-                        if (!downloaded.value && downloadPath != null)
-                          CustomButton(
-                            toolTip: "Download as pdf",
-                            activated: true,
-                            widget: Icon(
-                              Icons.download_sharp,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            width: 40,
-                            height: 40,
-                            backgroundColors: [
-                              themeColors.accentBlack,
-                            ],
-                            shadowColor: themeColors.darkOrange,
-                            blurRadius: 7,
-                            borderRadius: BorderRadius.circular(20),
-                            splashColor: Colors.white.withOpacity(0.2),
-                            onPressed: () => downloadPDF(
-                                title: show.title,
-                                images: images,
-                                state: setState),
+                        CustomButton(
+                          toolTip: "Download as pdf",
+                          activated: !downloaded.value && downloadPath != null,
+                          widget: Icon(
+                            Icons.download_sharp,
+                            color: Colors.white,
+                            size: 20,
                           ),
+                          width: 40,
+                          height: 40,
+                          backgroundColors: [
+                            themeColors.accentBlack,
+                          ],
+                          shadowColor: themeColors.darkOrange,
+                          blurRadius: 7,
+                          borderRadius: BorderRadius.circular(20),
+                          splashColor: Colors.white.withOpacity(0.2),
+                          onPressed: () => downloadPDF(
+                              title: show.title,
+                              images: images,
+                              state: setState),
+                        ),
                         SizedBox(
                           width: 10,
                         ),

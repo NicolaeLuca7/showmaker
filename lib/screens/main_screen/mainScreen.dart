@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:showmaker/common/myType.dart';
@@ -7,6 +8,7 @@ import 'package:showmaker/database/ShowPreview/showPreview.dart';
 import 'package:showmaker/design/customButton.dart';
 import 'package:showmaker/design/themeColors.dart';
 import 'package:showmaker/screens/Show/configure/configureScreen.dart';
+import 'package:showmaker/screens/Show/view/viewShow.dart';
 import 'package:showmaker/screens/ShowPreview/prevCard.dart';
 import '../../database/User/user.dart';
 import 'package:showmaker/prompting/parameters.dart' as par;
@@ -24,7 +26,10 @@ class _MainScreenState extends State<MainScreen> {
   _MainScreenState({required this.user1});
 
   double aheight = 0, awidth = 0;
+
   PageController pageController = PageController();
+  ScrollController scrollController = ScrollController();
+
   MyType<double> currentPage = MyType<double>(0);
 
   bool loadingNext = false;
@@ -88,9 +93,34 @@ class _MainScreenState extends State<MainScreen> {
 
                                     //
                                     Container(
-                                        height: aheight * 1 / 2.5,
+                                        height: 270,
                                         width: awidth,
-                                        child: PageView.builder(
+                                        child: /*FirestoreListView(
+                                          controller: scrollController,
+                                          scrollDirection: Axis.horizontal,
+                                          query: firestore
+                                              .collection('showsPreviews')
+                                              .where('userId',
+                                                  isEqualTo: user1.getId())
+                                              .orderBy('creationDate',
+                                                  descending: true),
+                                          itemBuilder: (context, doc) {
+                                            ShowPreview preview =
+                                                ShowPreview.fromDatabase(
+                                                    doc.data());
+                                            return SingleChildScrollView(
+                                              child: getPrevCard(
+                                                  context,
+                                                  scrollController.offset >
+                                                      0.5, //currentPage.value == index,
+                                                  270,
+                                                  awidth,
+                                                  preview),
+                                            );
+                                          },
+                                        ),
+                                      ), */
+                                            PageView.builder(
                                           controller: pageController,
                                           itemCount: loaded + 1,
                                           itemBuilder: (context, index) {
@@ -101,7 +131,8 @@ class _MainScreenState extends State<MainScreen> {
                                                     currentPage.value == index,
                                                     500,
                                                     awidth,
-                                                    previews[index]),
+                                                    previews[index],
+                                                    openPreview),
                                               );
                                             } else {
                                               if (loaded == previewsCount)
@@ -272,5 +303,15 @@ class _MainScreenState extends State<MainScreen> {
 
     loadingNext = false;
     setState(() {});
+  }
+
+  void openPreview(ShowPreview preview) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        settings: RouteSettings(name: '/ViewShow'),
+        builder: (context) => ViewShow(id: preview.showId),
+      ),
+    );
+    reloadPreviews();
   }
 }

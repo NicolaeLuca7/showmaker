@@ -57,6 +57,7 @@ class _ContentConfigState extends State<ContentConfig> {
   int currentInit = 1;
 
   bool pageCompleted = false;
+  bool loadingPage = true;
 
   double aheight = 0;
   double awidth = 0;
@@ -71,6 +72,7 @@ class _ContentConfigState extends State<ContentConfig> {
 
   @override
   void initState() {
+    super.initState();
     if (settings.length == 0) {
       images = List.generate(widget.parameters.slideCount,
           (index) => widget.backgroundImage.value!);
@@ -80,7 +82,15 @@ class _ContentConfigState extends State<ContentConfig> {
     }
     creditCnt.text = settings[0].content;
     loaded = List.generate(widget.parameters.slideCount, (index) => false);
-    super.initState();
+    initPage();
+  }
+
+  void initPage() async {
+    for (int i = 0; i < widget.parameters.slideCount; i++) {
+      await updateSlide(settings[i]);
+    }
+    loadingPage = false;
+    setState(() {});
   }
 
   var orientation;
@@ -116,103 +126,119 @@ class _ContentConfigState extends State<ContentConfig> {
                 transform: GradientRotation(pi / 4)),
           ),
           child: Center(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 35,
-                ),
-                //
-                Container(
-                  width: awidth,
-                  height: 60,
-                  child: Row(
+            child: loadingPage
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(width: 10),
-                      CustomButton(
-                        toolTip: 'Back',
-                        activated: true,
-                        widget: Icon(
-                          Icons.arrow_back_ios_rounded,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        width: 40,
-                        height: 40,
-                        backgroundColors: [
-                          themeColors.accentBlack,
-                        ],
-                        shadowColor: themeColors.darkOrange,
-                        blurRadius: 7,
-                        borderRadius: BorderRadius.circular(20),
-                        splashColor: Colors.white.withOpacity(0.2),
-                        onPressed: () {
-                          Navigator.maybePop(context);
-                        },
-                      ),
-                      Spacer(),
-                      CustomButton(
-                        activated: true,
-                        widget: Text(
-                          'Save',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w300),
-                        ),
-                        width: 120,
-                        height: 40,
-                        backgroundColors: [
-                          themeColors.accentBlack,
-                        ],
-                        shadowColor: themeColors.darkOrange,
-                        blurRadius: 7,
-                        borderRadius: BorderRadius.circular(10),
-                        splashColor: Colors.white.withOpacity(0.2),
-                        onPressed: () => completeDialog(),
+                      CircularProgressIndicator(
+                        color: Colors.yellow,
                       ),
                       SizedBox(
-                        width: 20,
+                        height: 10,
+                      ),
+                      Text(
+                        "Creating the slides",
+                        style: TextStyle(fontSize: 25),
+                      ),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      SizedBox(
+                        height: 35,
+                      ),
+                      //
+                      Container(
+                        width: awidth,
+                        height: 60,
+                        child: Row(
+                          children: [
+                            SizedBox(width: 10),
+                            CustomButton(
+                              toolTip: 'Back',
+                              activated: true,
+                              widget: Icon(
+                                Icons.arrow_back_ios_rounded,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              width: 40,
+                              height: 40,
+                              backgroundColors: [
+                                themeColors.accentBlack,
+                              ],
+                              shadowColor: themeColors.darkOrange,
+                              blurRadius: 7,
+                              borderRadius: BorderRadius.circular(20),
+                              splashColor: Colors.white.withOpacity(0.2),
+                              onPressed: () {
+                                Navigator.maybePop(context);
+                              },
+                            ),
+                            Spacer(),
+                            CustomButton(
+                              activated: true,
+                              widget: Text(
+                                'Save',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w300),
+                              ),
+                              width: 120,
+                              height: 40,
+                              backgroundColors: [
+                                themeColors.accentBlack,
+                              ],
+                              shadowColor: themeColors.darkOrange,
+                              blurRadius: 7,
+                              borderRadius: BorderRadius.circular(10),
+                              splashColor: Colors.white.withOpacity(0.2),
+                              onPressed: () => completeDialog(),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      //
+                      Container(
+                        width: awidth,
+                        height: 130,
+                        child: Row(
+                          children: [
+                            SizedBox(width: 10),
+                            Text(
+                              'Content\nConfiguration',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 42,
+                                  decorationColor: Colors.white,
+                                  decorationThickness: 0.9),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: PageView(
+                            children: [
+                              for (int id = 0;
+                                  id < widget.parameters.slideCount;
+                                  id++)
+                                SingleChildScrollView(
+                                  child: getContentCard(id),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
-                //
-                Container(
-                  width: awidth,
-                  height: 130,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 10),
-                      Text(
-                        'Content\nConfiguration',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 42,
-                            decorationColor: Colors.white,
-                            decorationThickness: 0.9),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Expanded(
-                  child: Center(
-                    child: PageView(
-                      children: [
-                        for (int id = 0;
-                            id < widget.parameters.slideCount;
-                            id++)
-                          SingleChildScrollView(
-                            child: getContentCard(id),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
@@ -223,10 +249,6 @@ class _ContentConfigState extends State<ContentConfig> {
 
   Widget getContentCard(int id) {
     return StatefulBuilder(builder: (context, state) {
-      if (!loaded[id]) {
-        loadModifications(settings[id], state);
-        loaded[id] = true;
-      }
       return Center(
         child: Container(
           height: cardHeight,
@@ -1232,13 +1254,13 @@ class _ContentConfigState extends State<ContentConfig> {
       builder: (context) => AlertDialog(
         backgroundColor: themeColors.accentBlack,
         title: Text(
-          'Save as new?',
+          'Saving option',
           style: TextStyle(
             color: themeColors.darkOrange,
           ),
         ),
         content: Text(
-          'If you say no the current show will be edited.',
+          'How do you want the show to be saved?',
           style: TextStyle(color: themeColors.darkOrange, fontSize: 20),
         ),
         actions: [
@@ -1277,7 +1299,7 @@ class _ContentConfigState extends State<ContentConfig> {
               );
             },
             child: Text(
-              'No',
+              'Save as edit',
               style: TextStyle(
                 color: themeColors.darkOrange,
               ),
@@ -1309,7 +1331,7 @@ class _ContentConfigState extends State<ContentConfig> {
               );
             },
             child: Text(
-              'Yes',
+              'Save as new',
               style: TextStyle(
                 color: themeColors.darkOrange,
               ),

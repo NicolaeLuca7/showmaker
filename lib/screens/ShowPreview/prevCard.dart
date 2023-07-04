@@ -7,9 +7,9 @@ import 'package:showmaker/design/themeColors.dart';
 import 'package:showmaker/screens/Show/view/viewShow.dart';
 
 Widget getPrevCard(BuildContext context, bool active, double height,
-    double width, ShowPreview preview) {
+    double width, ShowPreview preview, Function openPreview) {
   Color color = !active ? Colors.black.withOpacity(0.3) : Colors.transparent;
-  double textHeight = 40;
+  double textHeight = 50;
 
   return Padding(
     padding: EdgeInsets.only(left: 5, right: 5),
@@ -25,6 +25,7 @@ Widget getPrevCard(BuildContext context, bool active, double height,
             ),
             Center(
               child: AnimatedContainer(
+                padding: EdgeInsets.only(left: 5, right: 5),
                 width: width - (active ? 0 : 50),
                 duration: Duration(milliseconds: 300),
                 child: AspectRatio(
@@ -54,10 +55,7 @@ Widget getPrevCard(BuildContext context, bool active, double height,
                           color: color),
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              settings: RouteSettings(name: '/ViewShow'),
-                              builder: (context) =>
-                                  ViewShow(id: preview.showId)));
+                          openPreview(preview);
                         },
                       ),
                     ),

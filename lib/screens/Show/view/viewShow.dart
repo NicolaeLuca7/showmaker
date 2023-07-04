@@ -30,6 +30,7 @@ class ViewShow extends StatefulWidget {
 
 class _ViewShowState extends State<ViewShow> {
   bool loading = false;
+  bool donwloading = false;
 
   String message = '';
   String? downloadPath;
@@ -123,7 +124,7 @@ class _ViewShowState extends State<ViewShow> {
     );
   }
 
-  void initScreen() async {
+  Future<void> initScreen() async {
     loading = true;
     message = '';
     setState(() {});
@@ -214,11 +215,12 @@ class _ViewShowState extends State<ViewShow> {
       ScaffoldMessenger.of(context).showSnackBar(customSnackBar(
           content: "The pdf was saved", textColor: Colors.green));
     } catch (e) {
-      downloaded.value = true;
-      state(() {});
+      downloaded.value = false;
+
       ScaffoldMessenger.of(context).showSnackBar(customSnackBar(
           content: "Error downloading the pdf", textColor: Colors.red));
     }
+    state(() {});
   }
 
   void editDialog(BuildContext context, Show show) {
