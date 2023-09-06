@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:showmaker/common/myType.dart';
 import 'package:showmaker/database/ShowPreview/showPreview.dart';
+import 'package:showmaker/database/connection/authentication.dart';
 import 'package:showmaker/design/customButton.dart';
 import 'package:showmaker/design/themeColors.dart';
 import 'package:showmaker/screens/Show/configure/configureScreen.dart';
@@ -12,6 +13,8 @@ import 'package:showmaker/screens/Show/view/viewShow.dart';
 import 'package:showmaker/screens/ShowPreview/prevCard.dart';
 import '../../database/User/user.dart';
 import 'package:showmaker/prompting/parameters.dart' as par;
+
+import '../connection/connectScreen.dart';
 
 class MainScreen extends StatefulWidget {
   final User1 user1;
@@ -89,11 +92,28 @@ class _MainScreenState extends State<MainScreen> {
                               child: Center(
                                 child: Column(
                                   children: [
+                                    SizedBox(
+                                      width: awidth,
+                                      height: 60,
+                                      child: Row(
+                                        children: [
+                                          Spacer(),
+                                          IconButton(
+                                            tooltip: "Logout",
+                                            icon: Icon(
+                                              Icons.logout_rounded,
+                                              color: Colors.white,
+                                              size: 30,
+                                            ),
+                                            onPressed: logoutDialog,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                     Spacer(),
-
                                     //
                                     Container(
-                                        height: 270,
+                                        height: min(270, aheight - 200),
                                         width: awidth,
                                         child: /*FirestoreListView(
                                           controller: scrollController,
@@ -313,5 +333,59 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
     reloadPreviews();
+  }
+
+  void logoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: themeColors.accentBlack,
+        title: Text(
+          'Logout?',
+          style: TextStyle(
+            color: themeColors.darkOrange,
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'No',
+              style: TextStyle(
+                color: themeColors.darkOrange,
+              ),
+            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateColor.resolveWith(
+                (states) => themeColors.lightBlack,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Authentication.signOut(context: context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  settings: RouteSettings(name: "/ConnectScreen"),
+                  builder: (context) => ConnectScreen(),
+                ),
+              );
+            },
+            child: Text(
+              'Yes',
+              style: TextStyle(
+                color: themeColors.darkOrange,
+              ),
+            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateColor.resolveWith(
+                (states) => themeColors.lightBlack,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
