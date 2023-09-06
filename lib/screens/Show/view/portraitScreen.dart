@@ -73,10 +73,22 @@ Widget getPortraitScreen({
                   //
                   Spacer(),
                   //
-                  Center(
-                    child: Text(
-                      show!.title,
+                  SizedBox(
+                    width: awidth / 3,
+                    child: TextField(
+                      controller: TextEditingController(
+                        text: show!.title,
+                      ),
+                      readOnly: true,
                       style: TextStyle(fontSize: 30),
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.transparent),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.transparent),
+                        ),
+                      ),
                     ),
                   ),
                   //
@@ -102,7 +114,7 @@ Widget getPortraitScreen({
                         title: show.title, images: images, state: setState),
                   ),
                   SizedBox(
-                    width: 20,
+                    width: 15,
                   ),
                   CustomButton(
                       toolTip: "Edit",
@@ -123,7 +135,7 @@ Widget getPortraitScreen({
                       splashColor: Colors.white.withOpacity(0.2),
                       onPressed: () => editDialog(context, show)),
                   SizedBox(
-                    width: 20,
+                    width: 15,
                   ),
                   CustomButton(
                       toolTip: "Delete",

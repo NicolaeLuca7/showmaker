@@ -75,7 +75,26 @@ Widget getLandscapeScreen({
                           },
                         ),
                         Spacer(),
-                        Text(show!.title, style: TextStyle(fontSize: 30)),
+                        SizedBox(
+                          width: awidth / 3,
+                          child: TextField(
+                            controller: TextEditingController(
+                              text: show!.title,
+                            ),
+                            readOnly: true,
+                            style: TextStyle(fontSize: 30),
+                            decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                            ),
+                          ),
+                        ),
                         Spacer(),
                         CustomButton(
                           toolTip: "Download as pdf",

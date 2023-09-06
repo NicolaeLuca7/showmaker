@@ -282,7 +282,7 @@ class _ContentConfigState extends State<ContentConfig> {
                       ),
                       Slider(
                         activeColor: themeColors.yellowOrange,
-                        max: 500,
+                        max: 800,
                         value: settings[id].charCount.toDouble(),
                         onChanged: (val) {
                           settings[id].charCount = val.toInt();
