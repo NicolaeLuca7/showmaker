@@ -946,7 +946,6 @@ class _ContentConfigState extends State<ContentConfig> {
           height: 10,
         ),
         //
-
         Center(
           child: CustomButton(
             toolTip: "Underlined title",
@@ -972,7 +971,204 @@ class _ContentConfigState extends State<ContentConfig> {
         SizedBox(
           height: 10,
         ),
+        //
+        SizedBox(
+          width: 200,
+          height: 60,
+          child: Row(
+            children: [
+              if (card.id > 0)
+                CustomButton(
+                  toolTip: "Delete slide",
+                  widget: Icon(
+                    Icons.delete,
+                    color: themeColors.yellowOrange,
+                    size: 30,
+                  ),
+                  width: 40,
+                  height: 40,
+                  backgroundColors: [
+                    card.underlined
+                        ? themeColors.lightBlack
+                        : Colors.transparent,
+                  ],
+                  borderRadius: BorderRadius.circular(10),
+                  activated: !card.loading,
+                  onPressed: () => deleteSlideDialog(card, state),
+                ),
+              //
+              Spacer(),
+              //
+              CustomButton(
+                toolTip: "Insert new slide",
+                widget: Icon(
+                  Icons.add,
+                  color: themeColors.yellowOrange,
+                  size: 30,
+                ),
+                width: 40,
+                height: 40,
+                backgroundColors: [
+                  card.underlined ? themeColors.lightBlack : Colors.transparent,
+                ],
+                borderRadius: BorderRadius.circular(10),
+                activated: !card.loading,
+                onPressed: () => newSlideDialog(card, state),
+              ),
+              if (card.id == 0) Spacer()
+            ],
+          ),
+        ),
+
+        //
+        SizedBox(
+          height: 10,
+        ),
       ],
+    );
+  }
+
+  void deleteSlideDialog(SlideSettings card, StateSetter state) async {
+    await showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, state1) => AlertDialog(
+          backgroundColor: themeColors.accentBlack,
+          title: Text(
+            'Delete slide?',
+            style: TextStyle(
+              color: themeColors.darkOrange,
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: themeColors.darkOrange,
+                ),
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateColor.resolveWith(
+                  (states) => themeColors.lightBlack,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                for (int i = card.id + 1; i < settings.length; i++) {
+                  settings[i].id--;
+                }
+                settings.removeAt(card.id);
+                widget.parameters.slideCount--;
+                widget.parameters.slideTitle.removeAt(card.id);
+                images.removeAt(card.id);
+
+                setState(() {});
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Delete',
+                style: TextStyle(
+                  color: themeColors.darkOrange,
+                ),
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateColor.resolveWith(
+                  (states) => themeColors.lightBlack,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void newSlideDialog(SlideSettings card, StateSetter state) async {
+    SlideSettings newCard = SlideSettings(id: card.id + 1, charCount: 0);
+    TextEditingController controller = TextEditingController();
+    await showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, state1) => AlertDialog(
+          backgroundColor: themeColors.accentBlack,
+          title: Text(
+            'Insert new slide',
+            style: TextStyle(
+              color: themeColors.darkOrange,
+            ),
+          ),
+          content: TextField(
+            controller: controller,
+            onChanged: (text) {
+              state1(
+                () {},
+              );
+            },
+            maxLines: 1,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 30,
+            ),
+            decoration: InputDecoration(
+              hintStyle: TextStyle(
+                  color: Colors.white.withOpacity(0.5),
+                  fontSize: 20,
+                  fontWeight: FontWeight.w200),
+              contentPadding: EdgeInsets.all(0.0),
+              isDense: true,
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: themeColors.darkOrange,
+                ),
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateColor.resolveWith(
+                  (states) => themeColors.lightBlack,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (controller.text.length == 0) return;
+
+                for (int i = newCard.id; i < settings.length; i++) {
+                  settings[i].id++;
+                }
+                settings.insert(newCard.id, newCard);
+                widget.parameters.slideCount++;
+                widget.parameters.slideTitle
+                    .insert(newCard.id, controller.text);
+                images.insert(newCard.id, widget.backgroundImage.value!);
+
+                loadModifications(settings[newCard.id], state);
+                setState(() {});
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Insert',
+                style: TextStyle(
+                  color: themeColors.darkOrange
+                      .withOpacity(controller.text.length == 0 ? 0.5 : 1),
+                ),
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateColor.resolveWith(
+                  (states) => themeColors.lightBlack,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
