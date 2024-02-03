@@ -282,7 +282,7 @@ class _ContentConfigState extends State<ContentConfig> {
                       ),
                       Slider(
                         activeColor: themeColors.yellowOrange,
-                        max: 800,
+                        max: 2500,
                         value: settings[id].charCount.toDouble(),
                         onChanged: (val) {
                           settings[id].charCount = val.toInt();
@@ -412,7 +412,8 @@ class _ContentConfigState extends State<ContentConfig> {
                                         await Prompts.getSlideContent(
                                             widget.parameters.slideTitle[id],
                                             settings[id].charCount,
-                                            widget.parameters.subject);
+                                            widget.parameters.subject,
+                                            widget.parameters.language.name);
 
                                     await updateSlide(settings[id]);
 

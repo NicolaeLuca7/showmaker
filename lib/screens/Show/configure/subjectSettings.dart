@@ -130,6 +130,28 @@ class _SubjectSettingsState extends State<SubjectSettings> {
                         Spacer(),
                         CustomButton(
                           activated: pageCompleted,
+                          toolTip: "Language",
+                          widget: Icon(
+                            Icons.language,
+                            color: themeColors.darkOrange,
+                            size: 30,
+                          ),
+                          width: 40,
+                          height: 40,
+                          backgroundColors: [
+                            Colors.transparent,
+                          ],
+                          //shadowColor: themeColors.darkOrange,
+                          //blurRadius: 7,
+                          borderRadius: BorderRadius.circular(40),
+                          splashColor: themeColors.darkBlack.withOpacity(0.2),
+                          onPressed: () => showLanguagePopup(),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        CustomButton(
+                          activated: pageCompleted,
                           widget: Text(
                             'Next',
                             style: TextStyle(
@@ -414,7 +436,9 @@ class _SubjectSettingsState extends State<SubjectSettings> {
                                 setState(() {});
                                 //
                                 List<String> list = await Prompts.getTitles(
-                                    subjectController.text, slideCount);
+                                    subjectController.text,
+                                    slideCount,
+                                    widget.parameters.language.name);
 
                                 titlesCnt.clear();
                                 for (String s in list) {
@@ -444,6 +468,90 @@ class _SubjectSettingsState extends State<SubjectSettings> {
         ),
       ),
     );
+  }
+
+  void showLanguagePopup() {
+    par.Languages language = widget.parameters.language;
+    showDialog(
+          context: context,
+          builder: (context) => Dialog(
+            backgroundColor: themeColors.accentBlack,
+            child: Container(
+              height: min(350, aheight),
+              width: min(400, aheight),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: themeColors.darkBlack,
+              ),
+              child: Center(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Language',
+                      style: TextStyle(color: Colors.white, fontSize: 30),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      width: 150,
+                      height: 200,
+                      child: CupertinoPicker(
+                        itemExtent: 40,
+                        onSelectedItemChanged: (val) {
+                          setState(() {
+                            language = par.Languages.values[val];
+                          });
+                        },
+                        scrollController: FixedExtentScrollController(
+                            initialItem: par.Languages.values.indexWhere(
+                                (element) =>
+                                    element == widget.parameters.language)),
+                        children: [
+                          for (var language in par.Languages.values)
+                            Text(
+                              language.name,
+                              style: TextStyle(
+                                fontSize: 25,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    CustomButton(
+                      activated: pageCompleted,
+                      widget: Text(
+                        'Save',
+                        style: TextStyle(
+                            color: themeColors.darkOrange, fontSize: 20),
+                      ),
+                      width: 120,
+                      height: 40,
+                      backgroundColors: [
+                        themeColors.accentBlack,
+                      ],
+                      shadowColor: themeColors.darkOrange,
+                      blurRadius: 7,
+                      borderRadius: BorderRadius.circular(10),
+                      splashColor: Colors.white.withOpacity(0.2),
+                      onPressed: () {
+                        widget.parameters.language = language;
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ) ??
+        false; //if showDialouge had returned null, then return false
   }
 
   void nextSlide() {

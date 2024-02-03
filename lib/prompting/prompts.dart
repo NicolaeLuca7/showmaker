@@ -6,14 +6,15 @@ import 'package:showmaker/common/selectableItem.dart';
 import 'package:showmaker/prompting/parameters.dart' as par;
 
 class Prompts {
-  static Future<List<String>> getTitles(String subject, int slides) async {
+  static Future<List<String>> getTitles(
+      String subject, int slides, String language) async {
     List<String> titles = [];
     try {
       String response = (await OpenAI.instance.chat.create(
         model: "gpt-3.5-turbo",
         messages: [
           OpenAIChatCompletionChoiceMessageModel(
-            content: _getTitlesPrompt(subject, slides),
+            content: _getTitlesPrompt(subject, slides, language),
             role: OpenAIChatMessageRole.user,
           ),
         ],
@@ -92,11 +93,11 @@ class Prompts {
   }
 
   static Future<String> getSlideContent(
-      String title, int charCount, String subject) async {
+      String title, int charCount, String subject, String language) async {
     if (charCount == 0) {
       return 'Error: "Cannot generate content with 0 characters."';
     }
-    String prompt = _getSlideContentPrompt(title, charCount, subject);
+    String prompt = _getSlideContentPrompt(title, charCount, subject, language);
     String response;
     try {
       response = (await OpenAI.instance.chat.create(
@@ -118,9 +119,9 @@ class Prompts {
     return response;
   }
 
-  static String _getTitlesPrompt(String subject, int slides) {
+  static String _getTitlesPrompt(String subject, int slides, String language) {
     String prompt =
-        'Generate $slides short topics for a slideshow presentation about $subject.Have only the titles.';
+        'Generate $slides short topics for a slideshow presentation about $subject.Have only the titles.Write in $language.';
     //'Generate $slides short slide titles for a slideshow presentation about $subject.Have only the titles.';
     return prompt;
   }
@@ -134,8 +135,8 @@ class Prompts {
   }
 
   static String _getSlideContentPrompt(
-      String title, int charCount, String subject) {
-    return '''Give me a summary with informations of the topic "$title" for the subject "$subject".Use only $charCount characters.Format the informations for a slide.Give only the content.''';
+      String title, int charCount, String subject, String language) {
+    return '''Give me a summary with informations of the topic "$title" for the subject "$subject".Use only $charCount characters.Format the informations for a slide.Give only the content.Write in $language.''';
     //return '''Write me about the subject "$title" in around $charCount characters.''';
   }
 

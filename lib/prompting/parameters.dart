@@ -11,6 +11,7 @@ class Parameters {
   List<Shapes> shapes;
   List<Colors> colors;
   Styles style;
+  Languages language;
 
   Parameters(
       {this.title = '',
@@ -19,7 +20,8 @@ class Parameters {
       this.slideTitle = const [],
       this.shapes = const [],
       this.colors = const [],
-      this.style = Styles.Creative}) {}
+      this.style = Styles.Creative,
+      this.language = Languages.English}) {}
 
   Map<String, dynamic> toDatabase() => {
         "title": title,
@@ -31,16 +33,21 @@ class Parameters {
         "colors":
             List<String>.generate(colors.length, (index) => colors[index].name),
         "style": style.name,
+        "language": language.name
       };
 
   static Parameters fromDatabase(Map<String, dynamic> data) => Parameters(
-      title: data["title"],
-      subject: data["subject"],
-      slideCount: data["slideCount"],
-      slideTitle: List<String>.from(data["slideTitle"]),
-      shapes: _decodeShapes(List<String>.from(data["shapes"])),
-      colors: _decodeColors(List<String>.from(data["colors"])),
-      style: _decodeStyle(data["style"]));
+        title: data["title"],
+        subject: data["subject"],
+        slideCount: data["slideCount"],
+        slideTitle: List<String>.from(data["slideTitle"]),
+        shapes: _decodeShapes(List<String>.from(data["shapes"])),
+        colors: _decodeColors(List<String>.from(data["colors"])),
+        style: _decodeStyle(data["style"]),
+        language: _decodeLanguage(
+          data["language"],
+        ),
+      );
 
   static List<Shapes> _decodeShapes(List<String> data) {
     List<Shapes> shapes = [];
@@ -62,14 +69,14 @@ class Parameters {
     return Styles.values.firstWhere((element) => element.name == s);
   }
 
-  Parameters getCopy() => Parameters(
-      title: title,
-      subject: subject,
-      slideCount: slideCount,
-      slideTitle: slideTitle,
-      shapes: shapes,
-      colors: colors,
-      style: style);
+  static Languages _decodeLanguage(String? data) {
+    if (data == null) {
+      return Languages.English;
+    }
+    return Languages.values.firstWhere((element) => element.name == data);
+  }
+
+  Parameters getCopy() => Parameters.fromDatabase(toDatabase());
 }
 
 enum Styles { Retro, Creative, Futuristic }
@@ -113,6 +120,8 @@ enum FontWeights {
   w800,
   w900,
 }
+
+enum Languages { English, Romanian }
 
 Map<Colors, dynamic> colorsAsignment = {
   Colors.Red: material.Colors.red,
