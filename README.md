@@ -1,16 +1,22 @@
 # showmaker
 
-A new Flutter project.
+A slideshow creator app powered by GPT 4.1 and DALL-E 2
 
-## Getting Started
+https://github.com/user-attachments/assets/aac07b6a-99c6-445b-b285-af1a3493dca9
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+https://github.com/user-attachments/assets/4adfcf85-fa6b-4251-b237-7539dc83fd6c
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+
+https://github.com/user-attachments/assets/e13337d3-682d-408c-978f-01f44679e5c1
+
+
+
+https://github.com/user-attachments/assets/bff39c1d-ce15-428a-b919-71714d481312
+
+
+
+https://github.com/user-attachments/assets/56e1528d-538e-4715-8d39-fe5a0f983311
+
