@@ -24,6 +24,7 @@ migrate_working_dir/
 #.vscode/
 
 .env
+android/app/google-services.json
 
 # Flutter/Dart/Pub related
 **/doc/api/
